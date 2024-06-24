@@ -1,0 +1,1 @@
+API_KEY = "Put your Serpapi API key here."

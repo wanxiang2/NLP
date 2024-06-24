@@ -1,10 +1,11 @@
 import requests
-import secrets
+import my_secrets
 from serpapi import GoogleSearch
 import subprocess
 import os
 import re
 import argparse
+from bs4 import BeautifulSoup
 
 # Google Patents API Documentation:
 # https://serpapi.com/google-patents-api
@@ -55,7 +56,7 @@ def print_page(page_number, my_query, my_flags):
     params = {
         "engine": "google_patents",
         "q": my_query,
-        "api_key": secrets.API_KEY,
+        "api_key": my_secrets.API_KEY,
         "country": "US",
         "language": "ENGLISH",
         "page": page_number,
@@ -112,6 +113,54 @@ def print_page(page_number, my_query, my_flags):
                 log_file.write(str(patent_dict))
                 log_file.close()
                 print("Done.\n")
+
+            if '-t' in my_flags:
+                print("\nWriting text to " + patent_directory + ".txt text file...")
+                details_url = "https://serpapi.com/search?engine=google_patents_details"
+                details_params = {
+                    "engine": "google_patents_details",
+                    "patent_id": patent_id,
+                    "api_key": my_secrets.API_KEY
+                }
+
+                details_search = GoogleSearch(details_params)
+                details_data = details_search.get_dict()
+
+                description_link = details_data.get('description_link', None)
+                if description_link != None:
+                    html_text = requests.get(description_link).text
+                    
+                    html_file = open(patent_directory + '_html.txt', 'w')
+                    html_file.write(html_text)
+                    html_file.close()
+
+                    soup = BeautifulSoup(html_text, 'html.parser')
+
+                    #for img in soup.find_all('img'):
+                    #    img.decompose()
+
+                    target_paragraphs = soup.find_all(attrs={"class": "description-paragraph"})
+                    target_text = [paragraph.get_text() for paragraph in target_paragraphs]
+
+                    #text = target_elements.get_text(separator='\n', strip=True) 
+                    
+#Bridget said to use .splitlines() on target_text which should put all the lines in an array. Then loop through that array and write to .txt file. She said to still keep the repr(). Then we can take out any weird stuff using regex.
+                    with open(patent_directory + '.txt', 'w', encoding='utf-8') as file:
+                        for text in target_text:
+                            file.write(repr(text)) #There's also option to remove the repr(). Then there won't be the \n character and instead will actually go to the next line in the text.
+                                                   #The '' will also disappear. However, this wierd box will appear wherever there is an image. Since we're doing NLP, I feel like the ''
+                                                   #and the \n character will be fine. But ask Dr. Bridget what she thinks! You've saved the .txt file (the _LOOK file) from the execution with the repr() removed.
+
+
+
+                    #text_file = open(patent_directory + '.txt', 'w')
+                    #text_file.write(target_text)
+                    #text_file.close()
+
+                    print("\nDone.\n")
+
+                else:
+                    print("\n*****Error! HTML text to the patent not found in the response!*****\n")
         
         # This code will download all the images that any patent documents have to the current directory that you 
         # are on. Since it uses the Linux curl command, it might not work if you are not using a Linux OS.
@@ -131,3 +180,12 @@ def print_page(page_number, my_query, my_flags):
 
 if __name__ == "__main__":
     main()
+
+
+
+
+
+
+
+
+
