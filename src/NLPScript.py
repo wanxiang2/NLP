@@ -60,7 +60,8 @@ def print_page(page_number, my_query, my_flags):
         "country": "US",
         "language": "ENGLISH",
         "page": page_number,
-        "num": 100
+        "num": 100,
+        "type": "PATENT"
     }
 
     search = GoogleSearch(params)
@@ -76,12 +77,14 @@ def print_page(page_number, my_query, my_flags):
         patent_dict = {}
         title = patent.get('title', None)
         patent_id = patent.get('patent_id', None)
+        publication_date = patent.get('publication_date', None)
         snippet = patent.get('snippet', None)
         pdf = patent.get('pdf', None)
         figures = patent.get('figures', None)
 
         patent_dict['title'] = title
         patent_dict['patent_id'] = patent_id
+        patent_dict['publication_date'] = publication_date 
         patent_dict['snippet'] = snippet
         patent_dict['pdf'] = pdf
         patent_dict['figures'] = figures
@@ -128,11 +131,13 @@ def print_page(page_number, my_query, my_flags):
 
                 description_link = details_data.get('description_link', None)
                 if description_link != None:
-                    html_text = requests.get(description_link).text
-                    
-                    html_file = open(patent_directory + '_html.txt', 'w')
-                    html_file.write(html_text)
-                    html_file.close()
+                    html = requests.get(description_link)
+                    html.encoding = 'utf-8'
+                    html_text = html.text
+
+                    #html_file = open(patent_directory + '_html.txt', 'w')
+                    #html_file.write(html_text)
+                    #html_file.close()
 
                     soup = BeautifulSoup(html_text, 'html.parser')
 
@@ -147,9 +152,10 @@ def print_page(page_number, my_query, my_flags):
 #Bridget said to use .splitlines() on target_text which should put all the lines in an array. Then loop through that array and write to .txt file. She said to still keep the repr(). Then we can take out any weird stuff using regex.
                     with open(patent_directory + '.txt', 'w', encoding='utf-8') as file:
                         for text in target_text:
-                            file.write(repr(text)) #There's also option to remove the repr(). Then there won't be the \n character and instead will actually go to the next line in the text.
-                                                   #The '' will also disappear. However, this wierd box will appear wherever there is an image. Since we're doing NLP, I feel like the ''
-                                                   #and the \n character will be fine. But ask Dr. Bridget what she thinks! You've saved the .txt file (the _LOOK file) from the execution with the repr() removed.
+                            for line in text.splitlines():
+                                file.write(line)        #There's also option to remove the repr(). Then there won't be the \n character and instead will actually go to the next line in the text.
+                                                        #The '' will also disappear. However, this wierd box will appear wherever there is an image. Since we're doing NLP, I feel like the ''
+                            file.write("\n\n")          #and the \n character will be fine. But ask Dr. Bridget what she thinks! You've saved the .txt file (the _LOOK file) from the execution with the repr() removed.
 
 
 
@@ -180,7 +186,6 @@ def print_page(page_number, my_query, my_flags):
 
 if __name__ == "__main__":
     main()
-
 
 
 
