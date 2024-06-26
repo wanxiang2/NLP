@@ -6,6 +6,11 @@ import os
 import re
 import argparse
 from bs4 import BeautifulSoup
+import nltk
+nltk.download('punkt')
+from nltk.tokenize import word_tokenize
+from nltk.tokenize import sent_tokenize
+import pandas as pd
 
 # Google Patents API Documentation:
 # https://serpapi.com/google-patents-api
@@ -158,6 +163,26 @@ def print_page(page_number, my_query, my_flags):
 
                     print("\nDone.\n")
 
+
+                    print("\nUsing the text file to create a pickle file called " + patent_directory + ".pkl for Natural Language Processing...")
+                    
+                    # Reads from the .txt file that you created. Then, first split the text by sentences using NLTK, then
+                    # split those sentences into words and punctuation using NLTK. After that, it adds everything to
+                    # a Pandas DataFrame and saves it as a pickle file.
+                    with open(patent_directory + '.txt', 'r', encoding='utf-8') as read_file:
+                        content = read_file.read()
+                        sentences_list = sent_tokenize(content)
+                        
+                        tokenized_sentences = {}
+                        for column, sentence in enumerate(sentences_list):
+                            tokenized_sentences[column] = pd.Series(word_tokenize(sentence))
+
+                        data_frame = pd.DataFrame(tokenized_sentences)
+                        data_frame.to_pickle(patent_directory + '.pkl')
+                        print(data_frame.head())
+
+                    print("\nDone.\n")
+
                 else:
                     print("\n*****Error! HTML text to the patent not found in the response!*****\n")
         
@@ -179,7 +204,6 @@ def print_page(page_number, my_query, my_flags):
 
 if __name__ == "__main__":
     main()
-
 
 
 
