@@ -27,14 +27,14 @@ def main():
         
         os.chdir(dir_path)
 
-    getPickleFiles()
+        getPickleFiles(patent_directory)
 
-    os.chdir(current_dir)
+        os.chdir(current_dir)
 
     return 0
 
 
-def getPickleFiles():
+def getPickleFiles(patent_directory):
     
         print("\nUsing the text file to create a pickle file called " + patent_directory + ".pkl for Natural Language Processing...")
                     
@@ -45,10 +45,7 @@ def getPickleFiles():
             content = read_file.read()
             sentences_list = sent_tokenize(content)
                         
-            tokenized_sentences = {}
-            for column, sentence in enumerate(sentences_list):
-                tokenized_sentences[column] = pd.Series(word_tokenize(sentence))
-                        
+            tokenized_sentences = [word_tokenize(sentence) for sentence in sentences_list]
 
             # scratch code
             #for sentence in sentences_list
@@ -57,7 +54,7 @@ def getPickleFiles():
             # end scratch                         
 
 
-            data_frame = pd.DataFrame.from_dict(tokenized_sentences, orient='index')
+            data_frame = pd.DataFrame({'tokenized_sentence': tokenized_sentences})
             data_frame.to_pickle(patent_directory + '.pkl')
             print(data_frame.head(100))
 
