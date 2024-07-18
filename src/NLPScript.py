@@ -173,7 +173,7 @@ def print_page(page_number, my_query, my_flags):
                         print("\n***Error! The pickle file was not successfully created or was not properly created!***\n")
 
                 else:
-                    print("\n*****Error! HTML text to the patent not found in the response!*****\n")
+                    print("\n*****Error! You've ran out of search credits!*****\n")
         
         # This code will download all the images that any patent documents have to the current directory that you 
         # are on. Since it uses the Linux curl command, it might not work if you are not using a Linux OS.
