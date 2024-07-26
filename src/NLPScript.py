@@ -169,8 +169,6 @@ def print_page(page_number, my_query, my_flags):
                     # This calls the getPickleFiles() function in the postprocessing.py file to read the .txt file that was
                     # just created and generate a pickle file named the patent id + '.pkl'.
                     pickle_result = postprocessing.getPickleFiles(patent_directory)
-                    if (pickle_result != 0):
-                        print("\n***Error! The pickle file was not successfully created or was not properly created!***\n")
 
                 else:
                     print("\n*****Error! You've ran out of search credits!*****\n")
