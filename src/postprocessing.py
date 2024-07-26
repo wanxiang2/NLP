@@ -45,16 +45,16 @@ def getPickleFiles(patent_directory):
             content = read_file.read()
             sentences_list = sent_tokenize(content)
                         
-            tokenized_sentences = [word_tokenize(sentence) for sentence in sentences_list]
+            tokenized_sentences = []
+            tokenized_labels = []
+            for sentence in sentences_list:
+                 tokenized_sentences.append(word_tokenize(sentence))
+                 tokenized_labels.append(['O' for label_index in range(len(tokenized_sentences[-1]))])                    
 
-            # scratch code
-            #for sentence in sentences_list
-            #    tokenized_sentence = word_tokenize(sentence)
-            #    dataframe_name['sentence'].append(tokenized_sentence) # whatever syntax is needed to add tokenized sentence as a row of a column 
-            # end scratch                         
-
-
-            data_frame = pd.DataFrame({'tokenized_sentence': tokenized_sentences})
+            data_frame = pd.DataFrame({
+                 'Word': tokenized_sentences,
+                 'Label': tokenized_labels
+                 })
             data_frame.to_pickle(patent_directory + '.pkl')
             print(data_frame.head(100))
 
