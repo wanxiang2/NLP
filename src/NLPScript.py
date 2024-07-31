@@ -27,6 +27,9 @@ import postprocessing
 # document, and all patent images belonging to that patent (if any). The program will get the text files by using the
 # Google Patents Details API, which will be queried for each patent that you need to extract text to a .txt file for.
 
+# Example:
+# python3 NLPScript.py "food packaging product" -t
+
 def main():
     # Sets up command line arguments and flag options.
     parser = argparse.ArgumentParser(description="Contains the query and any flags to specify if you only want the log file, text, or figures.")
