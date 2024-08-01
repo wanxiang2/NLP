@@ -7,10 +7,9 @@ from nltk.tokenize import sent_tokenize
 import pandas as pd
 
 # When this main function is called, it iteratively looks for all folders that start with 'US' in the current directory, goes into those folders, 
-# reads the .txt file within the folder and generates a pickle file that will be named the patent id of the patent + '.pkl', 
-# then goes back to the original directory you started from. Call this file after you are done collecting your text data from the 
-# Google Patents Details API by calling the NLPScript.py file and need to get the pickle files from the text files again for whatever reason.
-# The getPickleFiles() function will be automatically called when you call the NLPScript.py file to get the .txt files!
+# reads the .txt file within the folder, then goes back to the original directory you started from. After it is done for all the text files, 
+# it will create a single pickle file for all of them. Call this file after you are done collecting your text data from the Google Patents Details API 
+# by calling the NLPScript.py file and need to generate one single pickle file for all the text files you've created.
 
 # This code will create one pickle file to put in an NER model from all the text files. postprocessing.py creates a pickle file for each
 # patent text file.
